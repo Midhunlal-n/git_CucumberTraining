@@ -2,7 +2,7 @@ Feature: Login Feature Demo
 
 Background:
     Given Browser is launched
-    And Navigated to url "https://www.saucedemo.com/"
+    And Navigated to url
 	
 	
     Scenario: Login with valid credentials

@@ -1,5 +1,6 @@
 package stepDefinitions_BookStore;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -21,15 +22,18 @@ public class myStepDefs_BookStore {
 	public void open_the_browser() {
 		WebDriverManager.chromedriver().setup();
 		driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(java.time.Duration.ofSeconds(10));
 		System.out.println("Webdriver setup completed --");
 
 	}
 
-	@When("Enter the URL {string}")
-	public void enter_the_url(String url) {
+	@When("Navigate to expected url")
+	public void Navigate_to_expected_url() {
+		// Data driven - from property file
+		String url = ConfigReader.getProperty("url");
+
 		driver.get(url);
-		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(java.time.Duration.ofSeconds(10));
 		System.out.println("Navigated to " + url + "  --");
 	}
 
@@ -64,8 +68,12 @@ public class myStepDefs_BookStore {
 
 	}
 
-	@When("Now click the {string} image in the Arrivals")
-	public void now_click_the_image_in_the_arrivals(String bookname) {
+	@When("Now click the image in the Arrivals")
+	public void now_click_the_image_in_the_arrivals() throws IOException {
+		// Data driven - from excel file
+		String excelPath = System.getProperty("user.dir") + "\\src\\test\\resources\\excelInput\\Bookstore_Excel.xlsx";
+		String bookname = ExcelReader.getCellData(excelPath, "Test_Sheet", 0, 1);
+
 		driver.findElement(By.xpath("//img[@alt='" + bookname + "']")).click();
 		System.out.println("Clicked on arrival/ " + bookname + " -- ");
 	}
@@ -77,7 +85,7 @@ public class myStepDefs_BookStore {
 		String getText = driver.findElement(By.xpath("//*[contains(text(),'added to your basket')]")).getText();
 		String[] getTextarr = getText.split("\n");
 		System.out.println(getTextarr[1]);
-		
+
 		System.out.println("Test Completed -- ");
 		Thread.sleep(2000);
 		driver.quit();
